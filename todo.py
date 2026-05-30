@@ -1,149 +1,146 @@
 """
-✅ Todo Manager
-A command-line todo list that saves tasks to a JSON file.
-
-Run: python todo.py
+命令行待办事项管理器
+一个简单的记事工具，支持新增、查看、完成、删除任务。
+数据保存在 JSON 文件中，关掉程序也不会丢失。
 """
 
 import json
 import os
 from datetime import datetime
 
-DATA_FILE = "todos.json"
+# 数据文件名
+数据文件 = "todos.json"
 
 
-def load_todos():
-    """Load todos from JSON file. Returns empty list if file doesn't exist."""
-    if os.path.exists(DATA_FILE):
-        with open(DATA_FILE, "r", encoding="utf-8") as f:
+def 加载数据():
+    """从 JSON 文件读取待办事项"""
+    if os.path.exists(数据文件):
+        with open(数据文件, "r", encoding="utf-8") as f:
             return json.load(f)
     return []
 
 
-def save_todos(todos):
-    """Save todos to JSON file."""
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(todos, f, ensure_ascii=False, indent=2)
+def 保存数据(数据):
+    """将待办事项写入 JSON 文件"""
+    with open(数据文件, "w", encoding="utf-8") as f:
+        json.dump(数据, f, ensure_ascii=False, indent=2)
 
 
-def add_todo(todos, title):
-    """Add a new todo item."""
-    todo = {
-        "id": len(todos) + 1,
-        "title": title,
-        "completed": False,
-        "created_at": datetime.now().strftime("%Y-%m-%d %H:%M")
-    }
-    todos.append(todo)
-    save_todos(todos)
-    print(f"✅ Added: [{todo['id']}] {title}")
-
-
-def list_todos(todos):
-    """Display all todos."""
-    if not todos:
-        print("No todos yet. Add one!")
+def 新增任务(任务列表):
+    """添加一条新任务"""
+    内容 = input("请输入任务内容：").strip()
+    if not 内容:
+        print("任务内容不能为空！")
         return
 
-    print("\n📋  Your Todos:")
-    print("-" * 50)
-    for t in todos:
-        status = "✅" if t['completed'] else "⬜"
-        print(f"  {status} [{t['id']}] {t['title']}  ({t['created_at']})")
-    print("-" * 50)
-
-    completed = sum(1 for t in todos if t['completed'])
-    print(f"Total: {len(todos)} | Done: {completed} | Left: {len(todos) - completed}")
-
-
-def complete_todo(todos, todo_id):
-    """Mark a todo as completed."""
-    for t in todos:
-        if t['id'] == todo_id:
-            t['completed'] = True
-            save_todos(todos)
-            print(f"✅ Marked as done: [{t['id']}] {t['title']}")
-            return
-    print(f"❌ Todo #{todo_id} not found.")
+    任务 = {
+        "id": len(任务列表) + 1,
+        "内容": 内容,
+        "已完成": False,
+        "创建时间": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
+    任务列表.append(任务)
+    保存数据(任务列表)
+    print(f"✅ 已添加：{内容}")
 
 
-def delete_todo(todos, todo_id):
-    """Delete a todo by ID."""
-    for i, t in enumerate(todos):
-        if t['id'] == todo_id:
-            removed = todos.pop(i)
-            save_todos(todos)
-            print(f"🗑️  Deleted: [{removed['id']}] {removed['title']}")
-            return
-    print(f"❌ Todo #{todo_id} not found.")
+def 查看任务(任务列表):
+    """显示所有任务"""
+    if not 任务列表:
+        print("📭 当前没有待办事项，轻松！")
+        return
 
-
-def show_help():
-    """Show available commands."""
-    print("\n📖  Commands:")
-    print("  add <task>     — Add a new todo")
-    print("  list           — Show all todos")
-    print("  done <id>      — Mark todo as completed")
-    print("  delete <id>    — Delete a todo")
-    print("  help           — Show this help")
-    print("  quit           — Exit the program")
-
-
-def main():
-    print("=" * 50)
-    print("    ✅  Todo Manager")
+    print(f"\n{'=' * 50}")
+    print(f"{'序号':<6}{'状态':<10}{'内容':<20}{'创建时间':<20}")
     print("=" * 50)
 
-    todos = load_todos()
-    print(f"Loaded {len(todos)} todos from storage.\n")
-    show_help()
+    未完成 = 0
+    for 任务 in 任务列表:
+        状态 = "✅ 已完成" if 任务["已完成"] else "⬜ 待办"
+        if not 任务["已完成"]:
+            未完成 += 1
+        print(f"{任务['id']:<6}{状态:<10}{任务['内容']:<20}{任务['创建时间']:<20}")
+    
+    print("=" * 50)
+    已完成 = len(任务列表) - 未完成
+    print(f"总计 {len(任务列表)} 条 | 待办 {未完成} 条 | 已完成 {已完成} 条")
+
+
+def 标记完成(任务列表):
+    """将任务标记为已完成"""
+    查看任务(任务列表)
+    if not 任务列表:
+        return
+
+    try:
+        序号 = int(input("\n请输入要标记完成的任务序号："))
+        任务 = 任务列表[序号 - 1]
+        任务["已完成"] = True
+        保存数据(任务列表)
+        print(f"🎉 已完成：{任务['内容']}")
+    except (ValueError, IndexError):
+        print("无效的序号！")
+
+
+def 删除任务(任务列表):
+    """删除一条任务"""
+    查看任务(任务列表)
+    if not 任务列表:
+        return
+
+    try:
+        序号 = int(input("\n请输入要删除的任务序号："))
+        任务 = 任务列表[序号 - 1]
+        确认 = input(f"确认删除「{任务['内容']}」？(y/n)：").strip().lower()
+        if 确认 == "y":
+            任务列表.pop(序号 - 1)
+            # 更新序号
+            for i, t in enumerate(任务列表):
+                t["id"] = i + 1
+            保存数据(任务列表)
+            print("🗑️ 已删除")
+        else:
+            print("已取消")
+    except (ValueError, IndexError):
+        print("无效的序号！")
+
+
+def 显示菜单():
+    """打印操作菜单"""
+    print("""
+┌──────────────────────────┐
+│      📋 待办事项管理器     │
+├──────────────────────────┤
+│  1. 查看所有任务          │
+│  2. 新增任务              │
+│  3. 标记完成              │
+│  4. 删除任务              │
+│  5. 退出                  │
+└──────────────────────────┘""")
+
+
+def 主程序():
+    """主循环"""
+    任务列表 = 加载数据()
 
     while True:
-        command = input("\n> ").strip()
+        显示菜单()
+        选择 = input("请选择操作 (1-5)：").strip()
 
-        if not command:
-            continue
-
-        parts = command.split(maxsplit=1)
-        action = parts[0].lower()
-
-        if action == "quit":
-            print(f"\nSaved {len(todos)} todos. Goodbye! 👋")
+        if 选择 == "1":
+            查看任务(任务列表)
+        elif 选择 == "2":
+            新增任务(任务列表)
+        elif 选择 == "3":
+            标记完成(任务列表)
+        elif 选择 == "4":
+            删除任务(任务列表)
+        elif 选择 == "5":
+            print("再见！👋")
             break
-
-        elif action == "add":
-            if len(parts) < 2:
-                print("Usage: add <task description>")
-            else:
-                add_todo(todos, parts[1])
-
-        elif action == "list":
-            list_todos(todos)
-
-        elif action == "done":
-            if len(parts) < 2:
-                print("Usage: done <todo id>")
-            else:
-                try:
-                    complete_todo(todos, int(parts[1]))
-                except ValueError:
-                    print("Please enter a valid todo ID number.")
-
-        elif action == "delete":
-            if len(parts) < 2:
-                print("Usage: delete <todo id>")
-            else:
-                try:
-                    delete_todo(todos, int(parts[1]))
-                except ValueError:
-                    print("Please enter a valid todo ID number.")
-
-        elif action == "help":
-            show_help()
-
         else:
-            print(f"Unknown command: '{action}'. Type 'help' for commands.")
+            print("无效选择，请重试！")
 
 
 if __name__ == "__main__":
-    main()
+    主程序()

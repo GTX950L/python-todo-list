@@ -1,53 +1,45 @@
-# ✅ Todo Manager
+# ✅ 命令行待办事项管理器
 
-A command-line todo list app built with Python.  
-Tasks are saved to a JSON file so they persist between sessions.
+一个用 Python 写的待办事项管理工具，支持增删改查，数据通过 JSON 文件持久化存储。
 
-## 🚀 How to Run
+## 🚀 运行方式
 
 ```bash
 python todo.py
 ```
 
-## 📖 Usage
+## 📖 使用说明
 
 ```
-> add Buy groceries
-✅ Added: [1] Buy groceries
-
-> add Finish Python homework
-✅ Added: [2] Finish Python homework
-
-> list
-📋  Your Todos:
-  ⬜ [1] Buy groceries  (2026-05-30 19:00)
-  ⬜ [2] Finish Python homework  (2026-05-30 19:01)
-Total: 2 | Done: 0 | Left: 2
-
-> done 1
-✅ Marked as done: [1] Buy groceries
-
-> delete 2
-🗑️  Deleted: [2] Finish Python homework
-
-> quit
-Saved 1 todos. Goodbye! 👋
+┌──────────────────────────┐
+│      📋 待办事项管理器     │
+├──────────────────────────┤
+│  1. 查看所有任务          │
+│  2. 新增任务              │
+│  3. 标记完成              │
+│  4. 删除任务              │
+│  5. 退出                  │
+└──────────────────────────┘
 ```
 
-## 🛠️ Features
+选择对应数字即可操作，数据保存在 `todos.json` 文件中，关了程序也不会丢。
 
-- ✅ Add new tasks
-- ✅ List all tasks with status
-- ✅ Mark tasks as completed
-- ✅ Delete tasks
-- ✅ Data persists to `todos.json`
-- ✅ Progress summary (done vs total)
+## 🛠️ 用到的知识点
 
-## 📚 What I Learned
+- 列表和字典操作
+- JSON 文件读写（数据持久化）
+- 函数拆分（每个功能一个函数）
+- 异常处理
+- 日期时间处理
+- 菜单交互设计
 
-- Working with JSON files (`json.load`, `json.dump`)
-- Date/time formatting (`datetime`)
-- File existence checking (`os.path.exists`)
-- List comprehensions
-- Dictionary data structures
-- Interactive command parsing
+## 📝 后续可以增强的功能
+
+- [ ] 按优先级排序
+- [ ] 分类/标签功能
+- [ ] 截止日期提醒
+- [ ] 网页版界面
+
+---
+
+*好记性不如烂笔头，用工具代替大脑。*
