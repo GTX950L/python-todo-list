@@ -1,5 +1,13 @@
 # ✅ 命令行待办事项管理器
 
+<div align="center">
+
+![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=flat-square&logo=python&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
+![Level](https://img.shields.io/badge/练习-初学者-blue?style=flat-square)
+
+</div>
+
 一个用 Python 写的待办事项管理工具，支持增删改查，数据通过 JSON 文件持久化存储。
 
 ## 🚀 运行方式
